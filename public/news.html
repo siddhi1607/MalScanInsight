@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cyber Threat Intelligence | MalScanInsight</title>
+  <link rel="stylesheet" href="css/news.css">
+</head>
+<body class="matrix-bg">
+
+  <button class="back-btn" onclick="history.back()">← Back</button>
+
+  <div class="news-container">
+    <h1>📰 Cyber Threat Intelligence</h1>
+    <p class="subtitle">Live scams, breaches, malware & phishing campaigns</p>
+
+    <!-- SEARCH -->
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search cyber threats (phishing, malware, breach...)"
+    />
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <button onclick="loadNews('phishing')">Phishing</button>
+      <button onclick="loadNews('malware')">Malware</button>
+      <button onclick="loadNews('data breach')">Breaches</button>
+      <button onclick="loadNews('ransomware')">Ransomware</button>
+      <button onclick="loadNews('cyber security')">All</button>
+    </div>
+
+    <!-- NEWS -->
+    <div id="newsGrid" class="news-grid"></div>
+  </div>
+
+  <script src="js/news.js"></script>
+</body>
+</html>

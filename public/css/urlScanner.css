@@ -1,0 +1,84 @@
+ body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: black;
+  color: #d6b4ff;
+}
+
+.matrix-bg {
+  min-height: 100vh;
+  background-image: radial-gradient(#8a2be233 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.center {
+  text-align: center;
+  padding-top: 40px;
+}
+
+.title {
+  font-size: 48px;
+  color: #c77dff;
+  text-shadow: 0 0 20px #9d4edd;
+}
+
+.logo {
+  font-size: 60px;
+  margin: 10px 0 40px;
+  text-shadow: 0 0 25px #9d4edd;
+}
+
+.scanner-box {
+  width: 60%;
+  margin: auto;
+  padding: 30px;
+  border-radius: 12px;
+  border: 2px solid #9d4edd;
+  box-shadow: 0 0 25px #9d4edd;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  background: black;
+  border: 1px solid #9d4edd;
+  color: #fff;
+  font-size: 16px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 14px;
+  width: 100%;
+  background: linear-gradient(90deg, #9d4edd, #5a189a);
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.result-box {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 10px;
+  background: #14001f;
+  box-shadow: 0 0 15px #9d4edd;
+}
+
+.back-btn {
+  color: #9d4edd;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+h3 {
+    margin-bottom: 5px;
+}
+
+ul {
+    margin-top: 0;
+    padding-left: 20px;
+}

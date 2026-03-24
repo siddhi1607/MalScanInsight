@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>URL Scanner</title>
+<link rel="stylesheet" href="css/urlScanner.css">
+</head>
+<body class="matrix-bg">
+
+<button class="back-btn" onclick="history.back()">⬅ Back</button>
+
+<div class="scanner-box">
+  <h2>🔍 URL Scanner</h2>
+  <input type="text" id="urlInput" placeholder="Enter URL">
+  <button onclick="scanURL()">Scan</button>
+  <div id="loader" class="loader hidden"></div>
+  <pre id="result"></pre>
+</div>
+
+<script src="js/urlScanner.js"></script>
+</body>
+</html>

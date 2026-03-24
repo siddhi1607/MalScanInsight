@@ -1,0 +1,81 @@
+  body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: black;
+  color: #d6b4ff;
+}
+
+/* MATRIX DOT BACKGROUND */
+.matrix-bg {
+  min-height: 100vh;
+  background-image: radial-gradient(#9d4edd33 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* CENTER WRAPPER */
+.home-center {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* TITLE */
+.home-title {
+  font-size: 50px;
+  font-weight: bold;
+  color: #c77dff;
+  text-shadow: 0 0 30px #9d4edd;
+  margin-bottom: 10px;
+}
+
+/* LOGO */
+.home-logo {
+  font-size: 70px;
+  margin-bottom: 50px;
+  text-shadow: 0 0 35px #9d4edd;
+}
+
+/* MAIN ACTION BOX */
+.home-box {
+  width: 60%;
+  max-width: 700px;
+  padding: 35px;
+  border-radius: 16px;
+  border: 2px solid #9d4edd;
+  box-shadow: 0 0 30px #9d4edd;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* BUTTON GRID */
+.home-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ACTION BUTTON */
+.home-btn {
+  padding: 18px;
+  font-size: 20px;
+  text-decoration: none;
+  color: white;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #9d4edd, #5a189a);
+  box-shadow: 0 0 20px #9d4edd;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.home-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px #c77dff;
+}
+
+/* SUBTEXT */
+.home-sub {
+  margin-top: 25px;
+  font-size: 14px;
+  color: #aaa;
+}
