@@ -1,26 +1,29 @@
- const express = require("express");
+const express = require("express");
 const axios = require("axios");
+const xml2js = require("xml2js");
+
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   const query = req.query.q || "cyber security";
 
   try {
-    const response = await axios.get(
-      "https://gnews.io/api/v4/search",
-      {
-        params: {
-          q: query,
-          lang: "en",
-          max: 10,
-          token: process.env.GNEWS_API_KEY
-        }
-      }
-    );
+    const url = `https://news.google.com/rss/search?q=${query}`;
 
-    res.json(response.data);
+    const response = await axios.get(url);
+
+    const result = await xml2js.parseStringPromise(response.data);
+
+    const articles = result.rss.channel[0].item.map(item => ({
+      title: item.title[0],
+      link: item.link[0],
+      pubDate: item.pubDate[0]
+    }));
+
+    res.json({ articles });
+
   } catch (err) {
-    console.error("NEWS API ERROR:", err.message);
+    console.error(err.message);
     res.status(500).json({ error: "Failed to fetch news" });
   }
 });

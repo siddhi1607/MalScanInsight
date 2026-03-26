@@ -15,13 +15,14 @@ function riskLevel(text) {
   return "low";
 }
 
-async function loadNews(query) {
-  newsGrid.innerHTML = "Loading...";
+async function loadNews() {
+    const res = await fetch("/api/news");
+    const data = await res.text(); // because RSS = XML
 
-  const url = `https://gnews.io/api/v4/search?q=${query}&lang=en&token=${API_KEY}`;
+    document.getElementById("news").innerText = data;
+}
 
-  const res = await fetch(url);
-  const data = await res.json();
+loadNews();
 
   newsGrid.innerHTML = "";
 
@@ -40,4 +41,4 @@ async function loadNews(query) {
       </div>
     `;
   });
-}
+
