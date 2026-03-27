@@ -1,20 +1,30 @@
 const express = require("express");
-const axios = require("axios");
 const router = express.Router();
+const axios = require("axios");
+const xml2js = require("xml2js");
 
 router.get("/", async (req, res) => {
-  try {
-    const query = req.query.q || "cyber security";
+  const query = req.query.q || "cyber security";
 
-    const url = `https://news.google.com/rss/search?q=${query}`;
+  try {
+    const url = `https://news.google.com/rss/search?q=${query}&hl=en-IN&gl=IN&ceid=IN:en`;
 
     const response = await axios.get(url);
 
-    res.set("Content-Type", "text/xml");
-    res.send(response.data);
+    const result = await xml2js.parseStringPromise(response.data);
 
-  } catch (err) {
-    res.status(500).send("Error fetching RSS news");
+    const items = result.rss.channel[0].item;
+
+    const articles = items.map(item => ({
+      title: item.title[0],
+      link: item.link[0],
+      pubDate: item.pubDate[0]
+    }));
+
+    res.json({ articles });
+
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch news" });
   }
 });
 
