@@ -1,8 +1,7 @@
 const express = require("express");
+const router = express.Router();
 const axios = require("axios");
 const xml2js = require("xml2js");
-
-const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
