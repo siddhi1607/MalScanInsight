@@ -1,52 +1,31 @@
-const newsGrid = document.getElementById("newsGrid");
-const searchInput = document.getElementById("searchInput");
+const express = require("express");
+const router = express.Router();
+const axios = require("axios");
+const xml2js = require("xml2js");
 
-// Load default news
-loadNews("cyber security");
+router.get("/", async (req, res) => {
+  const query = req.query.q || "cyber security";
 
-// Search on Enter
-searchInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") {
-    loadNews(searchInput.value);
+  try {
+    const url = `https://news.google.com/rss/search?q=${query}&hl=en-IN&gl=IN&ceid=IN:en`;
+
+    const response = await axios.get(url);
+
+    const result = await xml2js.parseStringPromise(response.data);
+
+    const items = result.rss.channel[0].item;
+
+    const articles = items.map(item => ({
+      title: item.title[0],
+      link: item.link[0],
+      pubDate: item.pubDate[0]
+    }));
+
+    res.json({ articles });
+
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch news" });
   }
 });
 
-// Risk badge logic
-function riskLevel(text) {
-  text = text.toLowerCase();
-  if (text.includes("breach") || text.includes("leak")) return "high";
-  if (text.includes("phishing") || text.includes("malware")) return "medium";
-  return "low";
-}
-
-// MAIN FUNCTION
-async function loadNews(query = "cyber security") {
-  try {
-    newsGrid.innerHTML = "<p>Loading...</p>";
-
-    const res = await fetch(`/api/news?q=${query}`);
-    const data = await res.json();
-
-    newsGrid.innerHTML = "";
-
-    data.articles.forEach(article => {
-      const risk = riskLevel(article.title);
-
-      newsGrid.innerHTML += `
-        <div class="news-card">
-          <span class="badge ${risk}">
-            ${risk.toUpperCase()} RISK
-          </span>
-          <h3>${article.title}</h3>
-          <p>${article.description || ""}</p>
-          <small>${article.pubDate}</small><br><br>
-          <a href="${article.link}" target="_blank">Read more →</a>
-        </div>
-      `;
-    });
-
-  } catch (err) {
-    newsGrid.innerHTML = "<p>Failed to load news 😢</p>";
-    console.error(err);
-  }
-}
+module.exports = router;
