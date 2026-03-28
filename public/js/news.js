@@ -1,34 +1,23 @@
 const newsGrid = document.getElementById("newsGrid");
 const searchInput = document.getElementById("searchInput");
 
-// 🔥 BACKUP NEWS (WILL ALWAYS WORK)
-const backupNews = [
-  {
-    title: "Cyber attack trends increasing globally",
-    link: "#",
-    pubDate: "Demo Data"
-  },
-  {
-    title: "Phishing attacks targeting banking users",
-    link: "#",
-    pubDate: "Demo Data"
-  },
-  {
-    title: "New malware detected in Android devices",
-    link: "#",
-    pubDate: "Demo Data"
-  }
-];
-
-// Load default
+// Load default news
 loadNews("cyber security");
 
-// Search
-searchInput?.addEventListener("keypress", (e) => {
+// Search on Enter
+searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     loadNews(searchInput.value);
   }
 });
+
+// Risk badge logic
+function riskLevel(text) {
+  text = text.toLowerCase();
+  if (text.includes("breach") || text.includes("leak")) return "high";
+  if (text.includes("phishing") || text.includes("malware")) return "medium";
+  return "low";
+}
 
 // MAIN FUNCTION
 async function loadNews(query = "cyber security") {
@@ -38,32 +27,26 @@ async function loadNews(query = "cyber security") {
     const res = await fetch(`/api/news?q=${query}`);
     const data = await res.json();
 
-    // If API fails or empty → use backup
-    if (!data.articles || data.articles.length === 0) {
-      throw new Error("No data");
-    }
+    newsGrid.innerHTML = "";
 
-    displayNews(data.articles);
+    data.articles.forEach(article => {
+      const risk = riskLevel(article.title);
+
+      newsGrid.innerHTML += `
+        <div class="news-card">
+          <span class="badge ${risk}">
+            ${risk.toUpperCase()} RISK
+          </span>
+          <h3>${article.title}</h3>
+          <p>${article.description || ""}</p>
+          <small>${article.pubDate}</small><br><br>
+          <a href="${article.link}" target="_blank">Read more →</a>
+        </div>
+      `;
+    });
 
   } catch (err) {
-    console.error("Using backup news:", err);
-
-    // 🔥 FALLBACK (VERY IMPORTANT)
-    displayNews(backupNews);
+    newsGrid.innerHTML = "<p>Failed to load news 😢</p>";
+    console.error(err);
   }
-}
-
-// DISPLAY FUNCTION
-function displayNews(articles) {
-  newsGrid.innerHTML = "";
-
-  articles.forEach(article => {
-    newsGrid.innerHTML += `
-      <div class="news-card">
-        <h3>${article.title}</h3>
-        <p>${article.pubDate || ""}</p>
-        <a href="${article.link}" target="_blank">Read more →</a>
-      </div>
-    `;
-  });
 }

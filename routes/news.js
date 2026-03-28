@@ -1,42 +1,52 @@
-const express = require("express");
-const router = express.Router();
-const axios = require("axios");
-const xml2js = require("xml2js");
+const newsGrid = document.getElementById("newsGrid");
+const searchInput = document.getElementById("searchInput");
 
-router.get("/", async (req, res) => {
-  try {
-    const query = req.query.q || "cyber security";
+// Load default news
+loadNews("cyber security");
 
-    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
-
-    const response = await axios.get(url, {
-      headers: {
-        "User-Agent": "Mozilla/5.0"
-      }
-    });
-
-    const xml = response.data;
-
-    xml2js.parseString(xml, (err, result) => {
-      if (err) {
-        return res.json({ articles: [] });
-      }
-
-      const items = result.rss.channel[0].item;
-
-      const articles = items.slice(0, 10).map(item => ({
-        title: item.title[0],
-        link: item.link[0],
-        pubDate: item.pubDate[0]
-      }));
-
-      res.json({ articles });
-    });
-
-  } catch (error) {
-    console.log("News error:", error.message);
-    res.json({ articles: [] });
+// Search on Enter
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    loadNews(searchInput.value);
   }
 });
 
-module.exports = router;
+// Risk badge logic
+function riskLevel(text) {
+  text = text.toLowerCase();
+  if (text.includes("breach") || text.includes("leak")) return "high";
+  if (text.includes("phishing") || text.includes("malware")) return "medium";
+  return "low";
+}
+
+// MAIN FUNCTION
+async function loadNews(query = "cyber security") {
+  try {
+    newsGrid.innerHTML = "<p>Loading...</p>";
+
+    const res = await fetch(`/api/news?q=${query}`);
+    const data = await res.json();
+
+    newsGrid.innerHTML = "";
+
+    data.articles.forEach(article => {
+      const risk = riskLevel(article.title);
+
+      newsGrid.innerHTML += `
+        <div class="news-card">
+          <span class="badge ${risk}">
+            ${risk.toUpperCase()} RISK
+          </span>
+          <h3>${article.title}</h3>
+          <p>${article.description || ""}</p>
+          <small>${article.pubDate}</small><br><br>
+          <a href="${article.link}" target="_blank">Read more →</a>
+        </div>
+      `;
+    });
+
+  } catch (err) {
+    newsGrid.innerHTML = "<p>Failed to load news 😢</p>";
+    console.error(err);
+  }
+}
