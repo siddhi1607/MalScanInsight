@@ -1,13 +1,14 @@
 const express = require("express");
-const router = express.Router();
 const axios = require("axios");
 const xml2js = require("xml2js");
 
-router.get("/", async (req, res) => {
-  const query = req.query.q || "cyber security";
+const router = express.Router();
 
+router.get("/", async (req, res) => {
   try {
-    const url = `https://news.google.com/rss/search?q=${query}&hl=en-IN&gl=IN&ceid=IN:en`;
+    const query = req.query.q || "cyber security";
+
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
 
     const response = await axios.get(url, {
       headers: {
@@ -15,21 +16,27 @@ router.get("/", async (req, res) => {
       }
     });
 
-    const result = await xml2js.parseStringPromise(response.data);
+    const xml = response.data;
 
-    const items = result.rss.channel[0].item || [];
+    xml2js.parseString(xml, (err, result) => {
+      if (err) {
+        return res.json({ articles: [] });
+      }
 
-    const articles = items.map(item => ({
-      title: item.title?.[0] || "No title",
-      link: item.link?.[0],
-      pubDate: item.pubDate?.[0]
-    }));
+      const items = result.rss.channel[0].item;
 
-    res.json({ articles });
+      const articles = items.slice(0, 10).map(item => ({
+        title: item.title[0],
+        link: item.link[0],
+        pubDate: item.pubDate[0]
+      }));
+
+      res.json({ articles });
+    });
 
   } catch (error) {
-    console.error("NEWS ERROR:", error.message);
-    res.status(500).json({ articles: [] }); // prevent crash
+    console.log("News error:", error.message);
+    res.json({ articles: [] });
   }
 });
 
